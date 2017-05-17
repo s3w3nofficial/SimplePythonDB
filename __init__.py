@@ -37,30 +37,35 @@ def selectData(data):
 		data = data[3]
 		args = args.replace('(', '')
 		args = args.replace(')', '')
+
 		if ',' in args:
 			args = args.split(',')	
+		else:
+			args = [args]
+		
+		if args[0] == '*':
+			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			args = rows[0].split(' ')
+			args.pop()
 
-		rows = []
-		with open("/home/s3w3n/Documents/DB/" + str(data), "r") as table:
-			for row in table:
-				rows.append(row)
-			hedding = rows[0].split(' ')
-			idx = []
+		for arg in args:
 			i = 0
-			for h in hedding:
-				for arg in args:
-					if arg in h:
-						idx.append(i)	
+			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			for col in rows[0].split(' '):
+				if arg in col:
+					break
 				i += 1
+			temp = ""
 			rows.pop(0)
-			r = []
-			res = []
 			for row in rows:
-				r = row.split(' ')
-				for i in idx:
-					print r[i]
+				cols = row.split(' ')
+				temp += cols[i].replace('\n', '') + " "
+			print temp
 	else:
 		return "table doesnt exist"
+
+def insertData(data):
+	pass
 
 def tableExist(name):
 	tmp = os.path.exists("/home/s3w3n/Documents/DB/" + str(name))
@@ -76,6 +81,8 @@ def dbHandler(data):
 	"""
 
 	if data != "":
+		data = data.replace(', ', ',')
+		data = data.replace(';', '')
 		data = data.split(' ')
 		if len(data) == 4: #create table
 			if data[0] == "create":
@@ -84,6 +91,11 @@ def dbHandler(data):
 			elif data[0] == "select":
 				if data[2] == "from":
 					selectData(data)
+			elif data[0] == "insert":
+				if data[2] == "into":
+					insertData(data)
+			else:
+				return "invalid commands"
 	else:
 		return "value error"
 
