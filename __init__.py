@@ -13,7 +13,7 @@ def startServer():
 		resp = (connect.recv(1024)).strip()
 		#print str(resp) + " " + str(address)
         	dbHandler(resp)
-		#connect.send("You said '" + resp + "' to me\n")
+		connect.send("You said '" + resp + "' to me\n")
 
         	connect.close()
 

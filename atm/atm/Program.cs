@@ -5,6 +5,7 @@ using System.Net;
 
 namespace atm
 {
+	
 	class MainClass
 	{
 		public static void Main (string[] args)
@@ -18,16 +19,19 @@ namespace atm
 
 		public static void Connect(string ip, int port, string msg)
 		{
-			Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			try { 
+			TcpClient client = new TcpClient(ip, port);
+			NetworkStream nwStream = client.GetStream();
+			byte[] bytesToSend = ASCIIEncoding.ASCII.GetBytes(msg);
 
-				s.Connect (IPAddress.Parse ("127.0.0.1"), 5901);          
-				byte[] data = Encoding.Default.GetBytes (msg);    
-				s.Send (data);
-			} catch {
-				Console.WriteLine ("ERROR");
-			}
+			//---send the text---
+			Console.WriteLine("Sending : " + msg);
+			nwStream.Write(bytesToSend, 0, bytesToSend.Length);
+
+			//---read back the text---
+			byte[] bytesToRead = new byte[client.ReceiveBufferSize];
+			int bytesRead = nwStream.Read(bytesToRead, 0, client.ReceiveBufferSize);
+			Console.WriteLine("Received : " + Encoding.ASCII.GetString(bytesToRead, 0, bytesRead));
+			client.Close();
 		}
-
 	}
 }
