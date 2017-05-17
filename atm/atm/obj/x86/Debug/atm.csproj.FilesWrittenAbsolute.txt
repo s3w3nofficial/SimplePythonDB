@@ -1,0 +1,5 @@
+/home/s3w3n/Documents/db/atm/atm/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/s3w3n/Documents/db/atm/atm/bin/Debug/atm.exe.mdb
+/home/s3w3n/Documents/db/atm/atm/bin/Debug/atm.exe
+/home/s3w3n/Documents/db/atm/atm/obj/x86/Debug/atm.exe
+/home/s3w3n/Documents/db/atm/atm/obj/x86/Debug/atm.exe.mdb
