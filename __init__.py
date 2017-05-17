@@ -1,11 +1,10 @@
 import socket, os.path
-from threading import Thread
 
 def startServer():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 	s.bind(("127.0.0.1",5901))
-	s.listen(5)	
+	s.listen(1)	
 
 	while True:
 
@@ -58,10 +57,8 @@ def selectData(data):
 			res = []
 			for row in rows:
 				r = row.split(' ')
-				res.append(r)
-			for tmp in res:
 				for i in idx:
-					print tmp[i]
+					print r[i]
 	else:
 		return "table doesnt exist"
 
@@ -91,4 +88,4 @@ def dbHandler(data):
 		return "value error"
 
 if __name__ == "__main__":
-	Thread(target=startServer).start()
+	startServer()
