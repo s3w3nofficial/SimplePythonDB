@@ -23,8 +23,12 @@ def createTable(data):
 		data.pop(-1)
 		args = args.replace('(', '')
 		args = args.replace(')', '')
+
 		if ',' in args:
 			args = args.split(',')
+		else:
+			args = [args]
+
 		with open("/home/s3w3n/Documents/DB/" + str(data[2]), "w+") as table:
 			for arg in args:
 				table.write(arg + " ")
@@ -65,7 +69,28 @@ def selectData(data):
 		return "table doesnt exist"
 
 def insertData(data):
-	pass
+	if tableExist(data[3]) == True:
+		args = data[1]
+		data = data[3]
+		args = args.replace('(', '')
+		args = args.replace(')', '')
+
+		if ',' in args:
+			args = args.split(',')	
+		else:
+			args = [args]
+
+		i = 0
+		arguments = {}
+		for arg in args:
+			temp = arg.split('=')
+			arguments[temp[0]] = temp[1]
+
+		print arguments
+
+
+	else:
+		return "table doesnt exist"
 
 def tableExist(name):
 	tmp = os.path.exists("/home/s3w3n/Documents/DB/" + str(name))
