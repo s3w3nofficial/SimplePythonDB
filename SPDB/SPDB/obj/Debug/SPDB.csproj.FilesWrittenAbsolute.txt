@@ -1,0 +1,5 @@
+/home/s3w3n/Documents/db/SPDB/SPDB/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/home/s3w3n/Documents/db/SPDB/SPDB/bin/Debug/SPDB.dll.mdb
+/home/s3w3n/Documents/db/SPDB/SPDB/bin/Debug/SPDB.dll
+/home/s3w3n/Documents/db/SPDB/SPDB/obj/Debug/SPDB.dll
+/home/s3w3n/Documents/db/SPDB/SPDB/obj/Debug/SPDB.dll.mdb

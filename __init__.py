@@ -12,8 +12,8 @@ def startServer():
 
 		resp = (connect.recv(1024)).strip()
 		#print str(resp) + " " + str(address)
-        	dbHandler(resp)
-		connect.send("You said '" + resp + "' to me\n")
+        	resp = dbHandler(resp)
+		connect.send(resp)
 
         	connect.close()
 
@@ -30,8 +30,14 @@ def createTable(data):
 			args = [args]
 
 		with open("/home/s3w3n/Documents/DB/" + str(data[2]), "w+") as table:
+			i = 0
 			for arg in args:
-				table.write(arg + " ")
+				if len(args) - 1 != i:
+					table.write(arg + " ")
+				else:
+					table.write(arg)
+				i += 1
+		return "success"
 	else:
 		return "table already exist"
 
@@ -49,9 +55,10 @@ def selectData(data):
 
 		if args[0] == '*':
 			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
-			args = rows[0].split(' ')
-			args.pop()
+			args = rows[0].replace('\n', '')
+			args = args.split(' ')
 
+		temp = ""
 		for arg in args:
 			i = 0
 			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
@@ -59,12 +66,19 @@ def selectData(data):
 				if arg in col:
 					break
 				i += 1
-			temp = ""
+
 			rows.pop(0)
+			a = 0
 			for row in rows:
 				cols = row.split(' ')
-				temp += cols[i].replace('\n', '') + " "
-			print temp
+				if len(rows) > a + 1:
+					temp += cols[i].replace('\n', '') + ","
+				else:
+					temp += cols[i].replace('\n', '')
+				a += 1
+			temp += " "
+		print temp
+		return temp
 	else:
 		return "table doesnt exist"
 
@@ -86,8 +100,11 @@ def insertData(data):
 			temp = arg.split('=')
 			arguments[temp[0]] = temp[1]
 
-		rows = open(table, 'r').readlines()
+		rows = open("/home/s3w3n/Documents/DB/" + table, 'r').readlines()
 		newfile = rows
+		for fil in newfile:
+			for fi in fil:
+				fi.replace('\n', '') 
 		toAdd = ''
 		for header in rows[0].replace('\n', '').split(' '):
 			value = 'NULL'
@@ -100,12 +117,11 @@ def insertData(data):
 
 		newfile += '\n' + toAdd
 
-		f = open(table, 'w')
+		f = open("/home/s3w3n/Documents/DB/" + table, 'w')
 		for line in newfile:
 			f.write(line)
 
-
-
+		return "success"
 	else:
 		return "table doesnt exist"
 
@@ -121,6 +137,7 @@ def dbHandler(data):
 	select (param,param) from tablename
 	insert (col=param,col=param) into tablename
 	"""
+	msg = ""	
 
 	if data != "":
 		data = data.replace(', ', ',')
@@ -129,17 +146,19 @@ def dbHandler(data):
 		if len(data) == 4: #create table
 			if data[0] == "create":
 				if data[1] == "table":
-					createTable(data)
+					msg = createTable(data)
 			elif data[0] == "select":
 				if data[2] == "from":
-					selectData(data)
+					msg = selectData(data)
 			elif data[0] == "insert":
 				if data[2] == "into":
-					insertData(data)
+					msg = insertData(data)
 			else:
-				return "invalid commands"
+				msg = "invalid commands"
 	else:
-		return "value error"
+		msg = "value error"
+
+	return msg
 
 if __name__ == "__main__":
 	startServer()
