@@ -88,7 +88,6 @@ def insertData(data):
 
 		print arguments
 
-
 	else:
 		return "table doesnt exist"
 
