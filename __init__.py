@@ -4,7 +4,7 @@ def startServer():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 	s.bind(("127.0.0.1",5901))
-	s.listen(1)	
+	s.listen(1)
 
 	while True:
 
@@ -43,10 +43,10 @@ def selectData(data):
 		args = args.replace(')', '')
 
 		if ',' in args:
-			args = args.split(',')	
+			args = args.split(',')
 		else:
 			args = [args]
-		
+
 		if args[0] == '*':
 			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
 			args = rows[0].split(' ')
@@ -71,12 +71,12 @@ def selectData(data):
 def insertData(data):
 	if tableExist(data[3]) == True:
 		args = data[1]
-		data = data[3]
+		table = data[3]
 		args = args.replace('(', '')
 		args = args.replace(')', '')
 
 		if ',' in args:
-			args = args.split(',')	
+			args = args.split(',')
 		else:
 			args = [args]
 
@@ -86,7 +86,25 @@ def insertData(data):
 			temp = arg.split('=')
 			arguments[temp[0]] = temp[1]
 
-		print arguments
+		rows = open(table, 'r').readlines()
+		newfile = rows
+		toAdd = ''
+		for header in rows[0].replace('\n', '').split(' '):
+			value = 'NULL'
+			if header in arguments:
+				value = arguments[header]
+			if toAdd == '':
+				toAdd = str(value)
+			else:
+				toAdd += ' ' + str(value)
+
+		newfile += '\n' + toAdd
+
+		f = open(table, 'w')
+		for line in newfile:
+			f.write(line)
+
+
 
 	else:
 		return "table doesnt exist"
@@ -101,7 +119,7 @@ def dbHandler(data):
 	"""
 	create table tablename (param,param)
 	select (param,param) from tablename
-	insert (col=param,col=param) into tablename 
+	insert (col=param,col=param) into tablename
 	"""
 
 	if data != "":
