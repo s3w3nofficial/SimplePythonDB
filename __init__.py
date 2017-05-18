@@ -1,4 +1,8 @@
-import socket, os.path
+import socket, os.path, os
+
+pidf = open('/home/spdb/run.pid', 'w')
+pidf.write(os.getpid())
+pidf.close()
 
 def startServer():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
