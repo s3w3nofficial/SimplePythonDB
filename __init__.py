@@ -17,6 +17,13 @@ def startServer():
 
         	connect.close()
 
+def replace_line(file_name, line_num, text):
+    lines = open(file_name, 'r').readlines()
+    lines[line_num] = text
+    out = open(file_name, 'w')
+    out.writelines(lines)
+    out.close()
+
 def createTable(data):
 	if tableExist(data[2]) == False:
 		args = data[-1]
@@ -82,6 +89,79 @@ def selectData(data):
 	else:
 		return "table doesnt exist"
 
+def selectDataFiltered(data):
+	args = data[1]
+	args2 = data[5]
+	data = data[3]
+	args = args.replace('(', '')
+	args = args.replace(')', '')
+	args2 = args2.replace('(', '')
+	args2 = args2.replace(')', '')
+
+	if ',' in args:
+		args = args.split(',')
+	else:
+		args = [args]
+
+	arguments = {}
+	if len(args2.split('=')) == 2:
+		temp = args2.split('=')
+		arguments[temp[0]] = temp[1]
+	else:
+		for arg in args2:
+			temp = arg.split('=')
+			arguments[temp[0]] = temp[1]
+
+	temp_args = []
+	rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+	temp_args = rows[0].replace('\n', '')
+	temp_args = temp_args.split(' ')
+
+
+	index = 0
+	for arg in temp_args:
+		if arg == list(arguments.keys())[0]:
+			break
+		index += 1
+
+	value = arguments[list(arguments.keys())[0]]
+
+	if args[0] == '*':
+		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		args = rows[0].replace('\n', '')
+		args = args.split(' ')
+
+	temp = ""
+	for arg in args:
+		i = 0
+		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		for col in rows[0].split(' '):
+			if arg in col:
+				break
+			i += 1
+
+		rows.pop(0)
+		
+		rows_temp = []
+		a = 0
+		for row in rows:
+			cols = row.split()
+			if cols[index] == value:
+				rows_temp.append(row)
+			a += 1
+
+		a = 0
+		for row in rows_temp:
+			cols = row.split(' ')
+			if len(rows_temp) > a + 1:
+				temp += cols[i].replace('\n', '') + ","
+			else:
+				temp += cols[i].replace('\n', '')
+			a += 1
+		temp += " "
+	print temp
+	return temp;
+
 def insertData(data):
 	if tableExist(data[3]) == True:
 		args = data[1]
@@ -125,6 +205,104 @@ def insertData(data):
 	else:
 		return "table doesnt exist"
 
+def insertIntoFiltered(data):
+	if tableExist(data[3]) == True:
+		args = data[1]
+		args2 = data[5]
+		data = data[3]
+		args = args.replace('(', '')
+		args = args.replace(')', '')
+		args2 = args2.replace('(', '')
+		args2 = args2.replace(')', '')
+
+		arguments_arg = {}
+		if len(args.split('=')) == 2:
+			temp = args.split('=')
+			arguments_arg[temp[0]] = temp[1]
+		else:
+			for arg in args:
+				temp = arg.split('=')
+				arguments_arg[temp[0]] = temp[1]
+
+		arguments = {}
+		if len(args2.split('=')) == 2:
+			temp = args2.split('=')
+			arguments[temp[0]] = temp[1]
+		else:
+			for arg in args2:
+				temp = arg.split('=')
+				arguments[temp[0]] = temp[1]
+
+		temp_args = []
+		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		temp_args = rows[0].replace('\n', '')
+		temp_args = temp_args.split(' ')
+
+
+		index = 0
+		for arg in temp_args:
+			if arg == list(arguments.keys())[0]:
+				break
+			index += 1
+
+		value = arguments[list(arguments.keys())[0]]
+
+		temp = ""
+		for arg in args:
+			i = 0
+			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			for col in rows[0].split(' '):
+				if arg in col:
+					break
+				i += 1
+
+			rows.pop(0)
+			
+			rows_temp = []
+			rows_temp_index = []
+
+			a = 0
+			for row in rows:
+				row = row.replace('\n', '')
+				cols = row.split()
+				if cols[index] == value:
+					rows_temp.append(row)
+					rows_temp_index.append(a+1)
+				a += 1
+
+		lines = []
+		i -= 1
+		value_arg = arguments_arg[list(arguments_arg.keys())[0]]
+		for row in rows_temp:
+			cols = row.split(' ')
+			if len(cols) > i + 2:
+				cols[i] = value_arg + ","
+			else:
+				cols[i] = value_arg
+			lines.append(' '.join(cols))
+
+
+		a = 0 
+		for index in rows_temp_index:
+			replace_line("/home/s3w3n/Documents/DB/" + str(data), index, lines[a]+"\n")
+			a += 1
+		return "success"	
+	else:
+		return "table doesnt exist"
+
+def dropTable(tablename):
+	if tablename == "all" or tablename == "*":
+		for root, dirs, files in os.walk("/home/s3w3n/Documents/DB"):
+			for f in files:
+				filename = os.path.join(root, f)
+	 			os.remove(filename)
+		return "success"
+	elif tableExist(data) == True:	
+		os.remove("/home/s3w3n/Documents/DB/" + str(tablename))
+		return "success"
+	else:
+		return "table doesnt exist"
+
 def tableExist(name):
 	tmp = os.path.exists("/home/s3w3n/Documents/DB/" + str(name))
 	return tmp
@@ -136,6 +314,7 @@ def dbHandler(data):
 	create table tablename (param,param)
 	select (param,param) from tablename
 	insert (col=param,col=param) into tablename
+	drop param = [all,*,tablename]
 	"""
 	msg = ""	
 
@@ -143,7 +322,16 @@ def dbHandler(data):
 		data = data.replace(', ', ',')
 		data = data.replace(';', '')
 		data = data.split(' ')
-		if len(data) == 4: #create table
+		if len(data) == 6:
+			if data[0] == "select":
+					if data[2] == "from":
+						if data[4] == "/":
+							msg = selectDataFiltered(data)
+			elif data[0] == "insert":
+					if data[2] == "into":
+						if data[4] == "/":
+							msg = insertIntoFiltered(data)
+ 		elif len(data) == 4: #create table
 			if data[0] == "create":
 				if data[1] == "table":
 					msg = createTable(data)
@@ -153,6 +341,11 @@ def dbHandler(data):
 			elif data[0] == "insert":
 				if data[2] == "into":
 					msg = insertData(data)
+			else:
+				msg = "invalid commands"
+		elif len(data) == 2:
+			if data[0] == "drop":
+				msg = dropTable(data[1])
 			else:
 				msg = "invalid commands"
 	else:
