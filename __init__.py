@@ -48,7 +48,7 @@ def createTable(data):
 		else:
 			args = [args]
 
-		with open("/home/s3w3n/Documents/DB/" + str(data[2]), "w+") as table:
+		with open("/home/spdb/DB" + str(data[2]), "w+") as table:
 			i = 0
 			for arg in args:
 				if len(args) - 1 != i:
@@ -73,14 +73,14 @@ def selectData(data):
 			args = [args]
 
 		if args[0] == '*':
-			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			rows = open("/home/spdb/DB" + str(data), "r").readlines()
 			args = rows[0].replace('\n', '')
 			args = args.split(' ')
 
 		temp = ""
 		for arg in args:
 			i = 0
-			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			rows = open("/home/spdb/DB" + str(data), "r").readlines()
 			for col in rows[0].split(' '):
 				if arg in col:
 					break
@@ -125,7 +125,7 @@ def selectDataFiltered(data):
 			arguments[temp[0]] = temp[1]
 
 	temp_args = []
-	rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+	rows = open("/home/spdb/DB" + str(data), "r").readlines()
 	temp_args = rows[0].replace('\n', '')
 	temp_args = temp_args.split(' ')
 
@@ -139,14 +139,14 @@ def selectDataFiltered(data):
 	value = arguments[list(arguments.keys())[0]]
 
 	if args[0] == '*':
-		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		rows = open("/home/spdb/DB" + str(data), "r").readlines()
 		args = rows[0].replace('\n', '')
 		args = args.split(' ')
 
 	temp = ""
 	for arg in args:
 		i = 0
-		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		rows = open("/home/spdb/DB" + str(data), "r").readlines()
 		for col in rows[0].split(' '):
 			if arg in col:
 				break
@@ -192,7 +192,7 @@ def insertData(data):
 			temp = arg.split('=')
 			arguments[temp[0]] = temp[1]
 
-		rows = open("/home/s3w3n/Documents/DB/" + table, 'r').readlines()
+		rows = open("/home/spdb/DB" + table, 'r').readlines()
 		newfile = rows
 		for fil in newfile:
 			for fi in fil:
@@ -209,7 +209,7 @@ def insertData(data):
 
 		newfile += '\n' + toAdd
 
-		f = open("/home/s3w3n/Documents/DB/" + table, 'w')
+		f = open("/home/spdb/DB" + table, 'w')
 		for line in newfile:
 			f.write(line)
 
@@ -246,7 +246,7 @@ def insertIntoFiltered(data):
 				arguments[temp[0]] = temp[1]
 
 		temp_args = []
-		rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+		rows = open("/home/spdb/DB" + str(data), "r").readlines()
 		temp_args = rows[0].replace('\n', '')
 		temp_args = temp_args.split(' ')
 
@@ -262,7 +262,7 @@ def insertIntoFiltered(data):
 		temp = ""
 		for arg in args:
 			i = 0
-			rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
+			rows = open("/home/spdb/DB" + str(data), "r").readlines()
 			for col in rows[0].split(' '):
 				if arg in col:
 					break
@@ -296,7 +296,7 @@ def insertIntoFiltered(data):
 
 		a = 0 
 		for index in rows_temp_index:
-			replace_line("/home/s3w3n/Documents/DB/" + str(data), index, lines[a]+"\n")
+			replace_line("/home/spdb/DB" + str(data), index, lines[a]+"\n")
 			a += 1
 		return "success"	
 	else:
@@ -304,19 +304,19 @@ def insertIntoFiltered(data):
 
 def dropTable(tablename):
 	if tablename == "all" or tablename == "*":
-		for root, dirs, files in os.walk("/home/s3w3n/Documents/DB"):
+		for root, dirs, files in os.walk("/home/spdb/DB"):
 			for f in files:
 				filename = os.path.join(root, f)
 	 			os.remove(filename)
 		return "success"
 	elif tableExist(data) == True:	
-		os.remove("/home/s3w3n/Documents/DB/" + str(tablename))
+		os.remove("/home/spdb/DB" + str(tablename))
 		return "success"
 	else:
 		return "table doesnt exist"
 
 def tableExist(name):
-	tmp = os.path.exists("/home/s3w3n/Documents/DB/" + str(name))
+	tmp = os.path.exists("/home/spdb/DB" + str(name))
 	return tmp
 
 def dbHandler(data):
