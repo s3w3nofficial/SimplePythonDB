@@ -1,4 +1,16 @@
-import socket, os.path
+import socket, os.path, os
+import signal
+import sys
+def signal_handler(signal, frame):
+	print('Ctrl+C')
+	os.system('rm /home/spdb/run.pid')
+	sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+pidf = open('/home/spdb/run.pid', 'w')
+pidf.write(str(os.getpid()))
+pidf.close()
 
 def startServer():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
