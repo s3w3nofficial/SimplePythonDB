@@ -7,4 +7,4 @@ echo Pulling from GitHub
 git pull
 echo Starting server again
 sleep 30
-python __init__.py
+nohup python __init__.py &> ~/log.log &
