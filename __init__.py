@@ -1,6 +1,7 @@
 import socket, os.path, os
 import signal
 import sys
+
 def signal_handler(signal, frame):
 	print('Ctrl+C')
 	os.system('rm /home/spdb/run.pid')
@@ -10,9 +11,9 @@ signal.signal(signal.SIGTERM, signal_handler)
 
 pidf = open('/home/spdb/run.pid', 'w')
 pidf.write(str(os.getpid()))
-pidf.close()
+pidf.close() 
 
-def startServer():
+def start_server():
 	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 	s.bind(("0.0.0.0",5901))
@@ -153,8 +154,8 @@ def selectDataFiltered(data):
 			i += 1
 
 		rows.pop(0)
-		
-		rows_temp = []
+
+                rows_temp = []
 		a = 0
 		for row in rows:
 			cols = row.split()
@@ -174,7 +175,7 @@ def selectDataFiltered(data):
 	print temp
 	return temp;
 
-def insertData(data):
+def insert(data):
 	if tableExist(data[3]) == True:
 		args = data[1]
 		table = data[3]
@@ -196,7 +197,7 @@ def insertData(data):
 		newfile = rows
 		for fil in newfile:
 			for fi in fil:
-				fi.replace('\n', '') 
+				fi.replace('\n', '')
 		toAdd = ''
 		for header in rows[0].replace('\n', '').split(' '):
 			value = 'NULL'
@@ -207,7 +208,7 @@ def insertData(data):
 			else:
 				toAdd += ' ' + str(value)
 
-		newfile += '\n' + toAdd
+                newfile += '\n' + toAdd
 
 		f = open("/home/spdb/DB/" + table, 'w')
 		for line in newfile:
@@ -269,7 +270,7 @@ def insertIntoFiltered(data):
 				i += 1
 
 			rows.pop(0)
-			
+
 			rows_temp = []
 			rows_temp_index = []
 
@@ -294,11 +295,11 @@ def insertIntoFiltered(data):
 			lines.append(' '.join(cols))
 
 
-		a = 0 
+		a = 0
 		for index in rows_temp_index:
 			replace_line("/home/spdb/DB/" + str(data), index, lines[a]+"\n")
 			a += 1
-		return "success"	
+		return "success"
 	else:
 		return "table doesnt exist"
 
@@ -307,9 +308,9 @@ def dropTable(tablename):
 		for root, dirs, files in os.walk("/home/spdb/DB/"):
 			for f in files:
 				filename = os.path.join(root, f)
-	 			os.remove(filename)
+				os.remove(filename)
 		return "success"
-	elif tableExist(data) == True:	
+	elif tableExist(data) == True:
 		os.remove("/home/spdb/DB/" + str(tablename))
 		return "success"
 	else:
@@ -328,7 +329,7 @@ def dbHandler(data):
 	insert (col=param,col=param) into tablename
 	drop param = [all,*,tablename]
 	"""
-	msg = ""	
+	msg = ""
 
 	if data != "":
 		data = data.replace(', ', ',')
@@ -343,7 +344,7 @@ def dbHandler(data):
 					if data[2] == "into":
 						if data[4] == "/":
 							msg = insertIntoFiltered(data)
- 		elif len(data) == 4: #create table
+                elif len(data) == 4: #create table
 			if data[0] == "create":
 				if data[1] == "table":
 					msg = createTable(data)
@@ -352,7 +353,7 @@ def dbHandler(data):
 					msg = selectData(data)
 			elif data[0] == "insert":
 				if data[2] == "into":
-					msg = insertData(data)
+			            msg = insert(data)
 			else:
 				msg = "invalid commands"
 		elif len(data) == 2:
@@ -366,4 +367,4 @@ def dbHandler(data):
 	return msg
 
 if __name__ == "__main__":
-	startServer()
+	start_server()
