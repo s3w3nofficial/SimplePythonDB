@@ -1,5 +1,3 @@
-
-
 data = "insert (momey=400) into users / (username=tomas)"
 
 data = data.replace(', ', ',')
