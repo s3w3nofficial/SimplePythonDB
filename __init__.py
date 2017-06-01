@@ -262,7 +262,6 @@ def insertIntoFiltered(data):
 
 		temp = ""
 		for arg in args:
-		for arg in args:
         i = 0
         rows = open("/home/s3w3n/Documents/DB/" + str(data), "r").readlines()
         for col in rows[0].split(' '):
