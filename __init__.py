@@ -300,7 +300,9 @@ def insertIntoFiltered(data):
 			replace_line("/home/spdb/DB/" + str(data), index, lines[a]+"\n")
 			a += 1
 		return "succes"	
-    else:
+
+	else:
+
 		return "table doesnt exist"
 
 def dropTable(tablename):
